@@ -22,8 +22,15 @@ if not exist "%MAVEN_HOME%" (
     del "%MAVEN_HOME%\dist.zip"
 )
 
-:: Find mvn.cmd inside the extracted folder
-for /r "%MAVEN_HOME%" %%f in (mvn.cmd) do set MAVEN_BIN=%%f
+:: Find the Maven executable inside the extracted folder
+for /r "%MAVEN_HOME%" %%f in (mvn.cmd) do (
+    echo %%f | findstr /i "\\bin\\mvn.cmd" >nul && set "MAVEN_BIN=%%f"
+)
+
+if not defined MAVEN_BIN (
+    echo ERROR: mvn.cmd not found in "%MAVEN_HOME%"
+    exit /b 1
+)
 
 call "%MAVEN_BIN%" %*
 endlocal

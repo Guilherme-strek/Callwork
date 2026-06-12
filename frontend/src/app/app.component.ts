@@ -1,10 +1,12 @@
 import { Component } from '@angular/core';
-import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { AuthService } from './core/auth.service';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, RouterLink, RouterLinkActive],
+  imports: [CommonModule, RouterOutlet, RouterLink, RouterLinkActive],
   template: `
     <header class="nav">
       <div class="container nav-inner">
@@ -14,9 +16,28 @@ import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
         <nav class="links">
           <a routerLink="/" routerLinkActive="on" [routerLinkActiveOptions]="{ exact: true }">Início</a>
           <a routerLink="/buscar" routerLinkActive="on">Buscar</a>
-          <a routerLink="/painel" routerLinkActive="on">Painel</a>
+          <a *ngIf="auth.session?.role === 'PROFESSIONAL'" routerLink="/painel" routerLinkActive="on">Painel</a>
+          <a *ngIf="auth.session?.role === 'CUSTOMER'" routerLink="/meus-pedidos" routerLinkActive="on">Meus pedidos</a>
         </nav>
-        <a routerLink="/cadastro" class="btn btn-primary btn-sm">Criar conta</a>
+        <div class="session" *ngIf="auth.session$ | async as session; else guest">
+          <a
+            *ngIf="session.role === 'PROFESSIONAL' && session.professionalId; else customerName"
+            class="small session-name"
+            [routerLink]="['/perfil', session.professionalId]"
+          >
+            {{ session.name }}
+          </a>
+          <ng-template #customerName>
+            <span class="small muted">{{ session.name }}</span>
+          </ng-template>
+          <button class="btn btn-ghost btn-sm" type="button" (click)="logout()">Sair</button>
+        </div>
+        <ng-template #guest>
+          <div class="session">
+            <a routerLink="/login" class="btn btn-ghost btn-sm">Entrar</a>
+            <a routerLink="/cadastro" class="btn btn-primary btn-sm">Criar conta</a>
+          </div>
+        </ng-template>
       </div>
     </header>
 
@@ -43,6 +64,9 @@ import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
       .logo-mark { width: 30px; height: 30px; border-radius: 8px; background: var(--brand-500); color: #fff; display: grid; place-items: center; }
       .links { display: flex; gap: 24px; font-size: 0.9rem; color: var(--ink-soft); }
       .links a.on { color: var(--brand-600); font-weight: 600; }
+      .session { display: flex; align-items: center; gap: 8px; }
+      .session-name { color: var(--ink-soft); font-weight: 600; }
+      .session-name:hover { color: var(--brand-600); text-decoration: underline; }
       .footer { border-top: 1px solid var(--line); background: #fff; margin-top: 40px; }
       .foot-inner { padding: 22px 20px; display: flex; justify-content: space-between; font-size: 0.78rem; color: var(--ink-soft); }
       @media (max-width: 640px) {
@@ -52,4 +76,11 @@ import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
     `,
   ],
 })
-export class AppComponent {}
+export class AppComponent {
+  constructor(public auth: AuthService, private router: Router) {}
+
+  logout(): void {
+    this.auth.logout();
+    this.router.navigate(['/login']);
+  }
+}

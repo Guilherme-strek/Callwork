@@ -1,11 +1,9 @@
 package com.callwork.api.model;
 
 import jakarta.persistence.*;
-import lombok.*;
 
 @Entity
 @Table(name = "services")
-@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
 public class Service {
 
     @Id
@@ -25,4 +23,44 @@ public class Service {
 
     @Column(nullable = false)
     private boolean active = true;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Professional getProfessional() {
+        return professional;
+    }
+
+    public void setProfessional(Professional professional) {
+        this.professional = professional;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public Integer getPriceCents() {
+        return priceCents;
+    }
+
+    public void setPriceCents(Integer priceCents) {
+        this.priceCents = priceCents;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
 }

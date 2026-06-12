@@ -14,6 +14,7 @@ export interface ServiceItem {
   id: number;
   title: string;
   price: string;
+  priceCents: number;
   active: boolean;
 }
 
@@ -41,6 +42,8 @@ export interface ProfessionalDetail {
 
 export interface CreateProfessional {
   name: string;
+  email: string;
+  password: string;
   role: string;
   category: string;
   city: string;
@@ -48,12 +51,42 @@ export interface CreateProfessional {
   cnpj: string;
 }
 
+export interface LoginResponse {
+  message: string;
+  role: 'PROFESSIONAL' | 'CUSTOMER';
+  professional: {
+    id: number;
+    name: string;
+    email: string;
+  } | null;
+  customer: {
+    id: number;
+    name: string;
+    email: string;
+  } | null;
+}
+
+export interface CreateCustomer {
+  name: string;
+  email: string;
+  password: string;
+}
+
+export interface UpsertService {
+  title: string;
+  priceCents: number;
+  active: boolean;
+}
+
 export interface ServiceRequestDto {
   id: number;
   professionalId: number;
+  requesterCustomerId: number | null;
   requesterName: string;
   serviceTitle: string;
   message: string;
   status: 'PENDING' | 'CONFIRMED' | 'DECLINED';
+  paymentStatus: 'WAITING_PAYMENT' | 'PAID';
+  paymentMethod: string | null;
   createdAt: string;
 }

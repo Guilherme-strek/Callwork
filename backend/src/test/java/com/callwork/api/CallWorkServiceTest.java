@@ -1,6 +1,10 @@
 package com.callwork.api;
 
-import com.callwork.api.dto.*;
+import com.callwork.api.dto.CreateProfessionalRequest;
+import com.callwork.api.dto.CreateCustomerRequest;
+import com.callwork.api.dto.LoginRequest;
+import com.callwork.api.dto.ProfessionalDetailDto;
+import com.callwork.api.dto.ProfessionalSummaryDto;
 import com.callwork.api.service.CallWorkService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,10 +15,6 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-/**
- * Teste de integracao usando H2 em memoria (perfil de teste).
- * O schema e criado pelo Flyway a partir das migrations.
- */
 @SpringBootTest
 @TestPropertySource(properties = {
         "spring.datasource.url=jdbc:h2:mem:callwork;MODE=PostgreSQL;DB_CLOSE_DELAY=-1",
@@ -43,7 +43,8 @@ class CallWorkServiceTest {
     @Test
     void cadastroComCnpjMarcaMeiVerificado() {
         var req = new CreateProfessionalRequest(
-                "Teste Silva", "Pintor", "Reformas", "Maringá, PR",
+                "Teste Silva", "teste.silva@callwork.local", "123456",
+                "Pintor", "Reformas", "Maringa, PR",
                 "Pinturas residenciais", "11.111.111/0001-11");
         ProfessionalDetailDto criado = service.create(req);
         assertThat(criado.meiVerified()).isTrue();
@@ -53,8 +54,33 @@ class CallWorkServiceTest {
     @Test
     void cadastroSemCnpjFicaComoAutonomo() {
         var req = new CreateProfessionalRequest(
-                "Sem Cnpj", "Jardineiro", "Reformas", "Maringá, PR", "Jardins", "");
+                "Sem Cnpj", "sem.cnpj@callwork.local", "123456",
+                "Jardineiro", "Reformas", "Maringa, PR", "Jardins", "");
         ProfessionalDetailDto criado = service.create(req);
         assertThat(criado.meiVerified()).isFalse();
+    }
+
+    @Test
+    void loginComEmailSenhaRetornaProfissional() {
+        var req = new CreateProfessionalRequest(
+                "Login Teste", "login.teste@callwork.local", "123456",
+                "Designer", "Tecnologia", "Remoto", "Perfil de teste", "");
+        service.create(req);
+
+        var login = service.login(new LoginRequest("login.teste@callwork.local", "123456"));
+
+        assertThat(login.role()).isEqualTo("PROFESSIONAL");
+        assertThat(login.professional().name()).isEqualTo("Login Teste");
+        assertThat(login.professional().email()).isEqualTo("login.teste@callwork.local");
+    }
+
+    @Test
+    void clientePodeCriarContaELogar() {
+        service.createCustomer(new CreateCustomerRequest("Cliente Teste", "cliente@callwork.local", "123456"));
+
+        var login = service.login(new LoginRequest("cliente@callwork.local", "123456"));
+
+        assertThat(login.role()).isEqualTo("CUSTOMER");
+        assertThat(login.customer().name()).isEqualTo("Cliente Teste");
     }
 }

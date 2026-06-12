@@ -46,13 +46,45 @@ public class ProfessionalController {
     @PostMapping("/{id}/requests")
     @ResponseStatus(HttpStatus.CREATED)
     public ServiceRequestDto requestService(@PathVariable Long id,
+                                            @RequestHeader("X-Customer-Id") Long requesterCustomerId,
                                             @Valid @RequestBody CreateServiceRequestPayload payload) {
-        return service.requestService(id, payload);
+        return service.requestService(id, requesterCustomerId, payload);
     }
 
     /** Pedidos recebidos por um profissional (usado no painel). */
     @GetMapping("/{id}/requests")
-    public List<ServiceRequestDto> listRequests(@PathVariable Long id) {
-        return service.listRequests(id);
+    public List<ServiceRequestDto> listRequests(@PathVariable Long id,
+                                                @RequestHeader("X-Professional-Id") Long actorProfessionalId) {
+        return service.listRequests(id, actorProfessionalId);
+    }
+
+    @GetMapping("/{id}/services")
+    public List<ServiceDto> listServices(@PathVariable Long id,
+                                         @RequestHeader("X-Professional-Id") Long actorProfessionalId) {
+        return service.listServices(id, actorProfessionalId);
+    }
+
+    @PostMapping("/{id}/services")
+    @ResponseStatus(HttpStatus.CREATED)
+    public ServiceDto createService(@PathVariable Long id,
+                                    @RequestHeader("X-Professional-Id") Long actorProfessionalId,
+                                    @Valid @RequestBody UpsertServiceRequest payload) {
+        return service.createService(id, actorProfessionalId, payload);
+    }
+
+    @PutMapping("/{professionalId}/services/{serviceId}")
+    public ServiceDto updateService(@PathVariable Long professionalId,
+                                    @PathVariable Long serviceId,
+                                    @RequestHeader("X-Professional-Id") Long actorProfessionalId,
+                                    @Valid @RequestBody UpsertServiceRequest payload) {
+        return service.updateService(professionalId, actorProfessionalId, serviceId, payload);
+    }
+
+    @DeleteMapping("/{professionalId}/services/{serviceId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteService(@PathVariable Long professionalId,
+                              @RequestHeader("X-Professional-Id") Long actorProfessionalId,
+                              @PathVariable Long serviceId) {
+        service.deleteService(professionalId, actorProfessionalId, serviceId);
     }
 }

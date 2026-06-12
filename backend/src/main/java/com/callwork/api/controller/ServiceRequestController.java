@@ -18,7 +18,8 @@ public class ServiceRequestController {
     /** Atualiza o status: PATCH /api/requests/{id}/status?value=CONFIRMED|DECLINED */
     @PatchMapping("/{id}/status")
     public ServiceRequestDto updateStatus(@PathVariable Long id,
+                                          @RequestHeader("X-Professional-Id") Long actorProfessionalId,
                                           @RequestParam("value") ServiceRequest.Status value) {
-        return service.updateRequestStatus(id, value);
+        return service.updateRequestStatus(id, actorProfessionalId, value);
     }
 }

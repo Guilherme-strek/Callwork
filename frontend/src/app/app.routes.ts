@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { requireCustomerSession, requireProfessionalSession } from './core/auth.guard';
 
 export const routes: Routes = [
   {
@@ -15,7 +16,18 @@ export const routes: Routes = [
   },
   {
     path: 'painel',
+    canActivate: [requireProfessionalSession],
     loadComponent: () => import('./pages/painel/painel.component').then((m) => m.PainelComponent),
+  },
+  {
+    path: 'meus-pedidos',
+    canActivate: [requireCustomerSession],
+    loadComponent: () =>
+      import('./pages/meus-pedidos/meus-pedidos.component').then((m) => m.MeusPedidosComponent),
+  },
+  {
+    path: 'login',
+    loadComponent: () => import('./pages/login/login.component').then((m) => m.LoginComponent),
   },
   {
     path: 'cadastro',
