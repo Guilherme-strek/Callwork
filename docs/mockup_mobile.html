@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CallWork — Mockup Mobile</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: system-ui, sans-serif; background: #f4f2eb; padding: 40px 20px; }
+    h1 { text-align: center; font-size: 22px; font-weight: 500; color: #085041; margin-bottom: 8px; }
+    .subtitle { text-align: center; font-size: 14px; color: #5F5E5A; margin-bottom: 40px; }
+    .screens-grid { display: flex; flex-wrap: wrap; gap: 40px; justify-content: center; }
+    .screen-wrap { display: flex; flex-direction: column; align-items: center; }
+    .screen-label { font-size: 12px; font-weight: 500; color: #5F5E5A; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 10px; }
+    .phone { width: 280px; background: #fff; border: 1.5px solid #D3D1C7; border-radius: 28px; overflow: hidden; box-shadow: 0 0 0 6px #F1EFE8; }
+    .status-bar { background: #085041; height: 28px; display: flex; align-items: center; justify-content: space-between; padding: 0 16px; }
+    .status-bar span { font-size: 11px; color: #9FE1CB; font-weight: 500; }
+    .nav-bar { background: #085041; padding: 10px 16px 14px; }
+    .logo { font-size: 15px; font-weight: 500; color: #fff; display: flex; align-items: center; gap: 6px; }
+    .logo-dot { width: 22px; height: 22px; background: #1D9E75; border-radius: 6px; display: flex; align-items: center; justify-content: center; }
+    .screen-body { padding: 14px; }
+    .brand-btn { background: #085041; color: #fff; border: none; border-radius: 10px; padding: 10px 16px; font-size: 13px; font-weight: 500; width: 100%; text-align: center; margin-bottom: 8px; display: block; }
+    .ghost-btn { background: transparent; color: #085041; border: 1px solid #0F6E56; border-radius: 10px; padding: 10px 16px; font-size: 13px; font-weight: 500; width: 100%; text-align: center; display: block; }
+    .hero-title { font-size: 18px; font-weight: 500; color: #2C2C2A; line-height: 1.3; margin-bottom: 6px; }
+    .hero-sub { font-size: 12px; color: #5F5E5A; margin-bottom: 14px; line-height: 1.5; }
+    .stats-row { display: flex; gap: 8px; margin-bottom: 14px; }
+    .stat-chip { flex: 1; background: #E1F5EE; border-radius: 8px; padding: 8px 6px; text-align: center; }
+    .stat-chip dt { font-size: 14px; font-weight: 500; color: #085041; }
+    .stat-chip dd { font-size: 10px; color: #0F6E56; }
+    .section-title { font-size: 13px; font-weight: 500; color: #2C2C2A; margin: 12px 0 8px; }
+    .pro-card { border: 0.5px solid #D3D1C7; border-radius: 10px; padding: 10px; margin-bottom: 8px; display: flex; align-items: center; gap: 10px; }
+    .avatar { width: 36px; height: 36px; border-radius: 50%; background: #E1F5EE; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 500; color: #085041; flex-shrink: 0; }
+    .pro-name { font-size: 13px; font-weight: 500; color: #2C2C2A; }
+    .pro-sub { font-size: 11px; color: #5F5E5A; }
+    .badge-ok { background: #E1F5EE; color: #085041; font-size: 10px; padding: 2px 7px; border-radius: 6px; white-space: nowrap; }
+    .badge-muted { background: #F1EFE8; color: #5F5E5A; font-size: 10px; padding: 2px 7px; border-radius: 6px; }
+    .badge-warn { background: #FAEEDA; color: #633806; font-size: 10px; padding: 2px 7px; border-radius: 6px; }
+    .search-bar { display: flex; align-items: center; gap: 8px; border: 0.5px solid #B4B2A9; border-radius: 10px; padding: 8px 12px; margin-bottom: 10px; background: #F1EFE8; }
+    .search-bar span { font-size: 13px; color: #5F5E5A; }
+    .chips { display: flex; gap: 6px; overflow-x: auto; margin-bottom: 12px; }
+    .chip { flex-shrink: 0; font-size: 11px; padding: 4px 10px; border-radius: 8px; border: 0.5px solid #D3D1C7; color: #5F5E5A; background: #fff; }
+    .chip.on { background: #E1F5EE; color: #085041; border-color: #9FE1CB; }
+    .divider { border: none; border-top: 0.5px solid #D3D1C7; margin: 12px 0; }
+    .svc-row { display: flex; justify-content: space-between; align-items: center; padding: 7px 0; border-bottom: 0.5px solid #D3D1C7; font-size: 12px; color: #2C2C2A; }
+    .svc-row:last-of-type { border-bottom: none; }
+    .stars { color: #BA7517; font-size: 11px; }
+    .kpi-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; }
+    .kpi-card { background: #F1EFE8; border-radius: 8px; padding: 8px 10px; }
+    .kpi-val { font-size: 16px; font-weight: 500; color: #2C2C2A; }
+    .kpi-label { font-size: 10px; color: #5F5E5A; margin-bottom: 2px; }
+    .req-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 0.5px solid #D3D1C7; }
+    .req-row:last-child { border-bottom: none; }
+    .field { margin-bottom: 10px; }
+    .field label { font-size: 11px; color: #5F5E5A; display: block; margin-bottom: 4px; }
+    .field input, .field select { width: 100%; border: 0.5px solid #B4B2A9; border-radius: 8px; padding: 7px 10px; font-size: 12px; background: #fff; color: #2C2C2A; font-family: inherit; }
+    .stepper { display: flex; gap: 4px; margin-bottom: 14px; }
+    .step { flex: 1; height: 3px; border-radius: 2px; background: #D3D1C7; }
+    .step.done { background: #085041; }
+    .step.cur { background: #1D9E75; }
+    .bottom-tabs { border-top: 0.5px solid #D3D1C7; display: flex; }
+    .tab { flex: 1; padding: 8px 4px; text-align: center; font-size: 10px; color: #5F5E5A; }
+    .tab.on { color: #085041; }
+    .tab i { display: block; font-size: 18px; margin-bottom: 2px; }
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  </style>
+</head>
+<body>
+  <h1>CallWork — Mockup Mobile</h1>
+  <p class="subtitle">Telas do aplicativo mobile · Angular + Spring Boot</p>
+
+  <div class="screens-grid">
+
+    <!-- TELA 1: HOME -->
+    <div class="screen-wrap">
+      <p class="screen-label">1 — início</p>
+      <div class="phone">
+        <div class="status-bar"><span>9:41</span><span>100%</span></div>
+        <div class="nav-bar">
+          <div class="logo">
+            <div class="logo-dot"><i class="ti ti-phone" style="font-size:12px;color:#fff"></i></div>
+            Call Work
+          </div>
+        </div>
+        <div class="screen-body">
+          <p class="hero-title">O serviço que você precisa, <span style="color:#085041">perto de você.</span></p>
+          <p class="hero-sub">Microempreendedores e autônomos da sua região.</p>
+          <div class="brand-btn">Buscar serviços</div>
+          <div class="ghost-btn">Sou profissional</div>
+          <dl class="stats-row">
+            <div class="stat-chip"><dt>12k+</dt><dd>Profissionais</dd></div>
+            <div class="stat-chip"><dt>85k</dt><dd>Serviços</dd></div>
+            <div class="stat-chip"><dt>4,8★</dt><dd>Avaliação</dd></div>
+          </dl>
+          <p class="section-title">Destaques</p>
+          <div class="pro-card">
+            <div class="avatar">AM</div>
+            <div style="flex:1;min-width:0">
+              <p class="pro-name">Ana Moura · Diarista</p>
+              <p class="pro-sub"><span class="stars">★</span> 4,9 · Maringá, PR</p>
+            </div>
+            <span class="badge-ok">✓ MEI</span>
+          </div>
+          <div class="pro-card">
+            <div class="avatar">CS</div>
+            <div style="flex:1;min-width:0">
+              <p class="pro-name">Carlos Silva · Eletricista</p>
+              <p class="pro-sub"><span class="stars">★</span> 4,7 · Maringá, PR</p>
+            </div>
+            <span class="badge-ok">✓ MEI</span>
+          </div>
+        </div>
+        <div class="bottom-tabs">
+          <div class="tab on"><i class="ti ti-home"></i>Início</div>
+          <div class="tab"><i class="ti ti-search"></i>Buscar</div>
+          <div class="tab"><i class="ti ti-layout-dashboard"></i>Painel</div>
+          <div class="tab"><i class="ti ti-user"></i>Perfil</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TELA 2: BUSCAR -->
+    <div class="screen-wrap">
+      <p class="screen-label">2 — buscar</p>
+      <div class="phone">
+        <div class="status-bar"><span>9:41</span><span>100%</span></div>
+        <div class="nav-bar">
+          <div class="logo">
+            <div class="logo-dot"><i class="ti ti-phone" style="font-size:12px;color:#fff"></i></div>
+            Call Work
+          </div>
+        </div>
+        <div class="screen-body">
+          <div class="search-bar">
+            <i class="ti ti-search" style="font-size:16px;color:#5F5E5A"></i>
+            <span>Diarista, eletricista...</span>
+          </div>
+          <div class="chips">
+            <div class="chip on">Todos</div>
+            <div class="chip">Limpeza</div>
+            <div class="chip">Reformas</div>
+            <div class="chip">Tecnologia</div>
+            <div class="chip">Beleza</div>
+          </div>
+          <p style="font-size:11px;color:#5F5E5A;margin-bottom:10px">12 profissionais em Maringá, PR</p>
+          <div class="pro-card">
+            <div class="avatar">AM</div>
+            <div style="flex:1;min-width:0">
+              <p class="pro-name">Ana Moura</p>
+              <p class="pro-sub">Diarista · <span class="stars">★</span> 4,9 · 48 aval.</p>
+            </div>
+            <span class="badge-ok">✓ MEI</span>
+          </div>
+          <div class="pro-card">
+            <div class="avatar">JO</div>
+            <div style="flex:1;min-width:0">
+              <p class="pro-name">João Oliveira</p>
+              <p class="pro-sub">Faxineiro · <span class="stars">★</span> 4,5 · 32 aval.</p>
+            </div>
+            <span class="badge-muted">Autônomo</span>
+          </div>
+          <div class="pro-card">
+            <div class="avatar">LP</div>
+            <div style="flex:1;min-width:0">
+              <p class="pro-name">Lucia Prado</p>
+              <p class="pro-sub">Limpeza comercial · <span class="stars">★</span> 5,0</p>
+            </div>
+            <span class="badge-ok">✓ MEI</span>
+          </div>
+        </div>
+        <div class="bottom-tabs">
+          <div class="tab"><i class="ti ti-home"></i>Início</div>
+          <div class="tab on"><i class="ti ti-search"></i>Buscar</div>
+          <div class="tab"><i class="ti ti-layout-dashboard"></i>Painel</div>
+          <div class="tab"><i class="ti ti-user"></i>Perfil</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TELA 3: PERFIL -->
+    <div class="screen-wrap">
+      <p class="screen-label">3 — perfil do profissional</p>
+      <div class="phone">
+        <div class="status-bar"><span>9:41</span><span>100%</span></div>
+        <div style="background:#085041;padding:10px 16px 14px">
+          <p style="font-size:11px;color:#9FE1CB;margin-bottom:8px">← Voltar à busca</p>
+          <div style="display:flex;align-items:center;gap:12px">
+            <div style="width:48px;height:48px;border-radius:50%;background:#1D9E75;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:500;color:#fff">AM</div>
+            <div>
+              <p style="font-size:15px;font-weight:500;color:#fff">Ana Moura <span style="background:#9FE1CB;color:#085041;font-size:9px;padding:2px 6px;border-radius:4px">✓ MEI</span></p>
+              <p style="font-size:11px;color:#9FE1CB">Diarista · Maringá, PR</p>
+              <p style="font-size:11px;color:#9FE1CB"><span class="stars">★★★★★</span> 4,9 · 48 avaliações</p>
+            </div>
+          </div>
+        </div>
+        <div class="screen-body">
+          <p class="section-title">Serviços e preços</p>
+          <div class="svc-row"><span>Limpeza residencial</span><strong style="font-size:12px">R$ 180,00</strong></div>
+          <div class="svc-row"><span>Limpeza pós-obra</span><strong style="font-size:12px">R$ 280,00</strong></div>
+          <div class="svc-row"><span>Limpeza comercial</span><strong style="font-size:12px">R$ 220,00</strong></div>
+          <div class="brand-btn" style="margin-top:12px">📅 Solicitar serviço</div>
+          <hr class="divider">
+          <p class="section-title">Avaliações</p>
+          <div style="padding:8px 0;border-bottom:0.5px solid #D3D1C7">
+            <p style="font-size:12px;font-weight:500;color:#2C2C2A"><span class="stars">★★★★★</span> Maria Lima</p>
+            <p style="font-size:11px;color:#5F5E5A;margin-top:3px">Excelente serviço, pontual e cuidadosa!</p>
+          </div>
+          <div style="padding:8px 0">
+            <p style="font-size:12px;font-weight:500;color:#2C2C2A"><span class="stars">★★★★★</span> Pedro Costa</p>
+            <p style="font-size:11px;color:#5F5E5A;margin-top:3px">Muito profissional, recomendo.</p>
+          </div>
+        </div>
+        <div class="bottom-tabs">
+          <div class="tab"><i class="ti ti-home"></i>Início</div>
+          <div class="tab on"><i class="ti ti-search"></i>Buscar</div>
+          <div class="tab"><i class="ti ti-layout-dashboard"></i>Painel</div>
+          <div class="tab"><i class="ti ti-user"></i>Perfil</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TELA 4: PAINEL -->
+    <div class="screen-wrap">
+      <p class="screen-label">4 — painel do profissional</p>
+      <div class="phone">
+        <div class="status-bar"><span>9:41</span><span>100%</span></div>
+        <div class="nav-bar">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div class="logo">
+              <div class="logo-dot"><i class="ti ti-phone" style="font-size:12px;color:#fff"></i></div>
+              Call Work
+            </div>
+            <div class="avatar" style="background:#1D9E75;color:#fff;width:28px;height:28px;font-size:11px">AM</div>
+          </div>
+        </div>
+        <div class="screen-body">
+          <p style="font-size:15px;font-weight:500;color:#2C2C2A;margin-bottom:2px">Olá, Ana 👋</p>
+          <p style="font-size:11px;color:#5F5E5A;margin-bottom:12px">Resumo de junho</p>
+          <div class="kpi-grid">
+            <div class="kpi-card"><p class="kpi-label">Ganhos do mês</p><p class="kpi-val" style="color:#085041">R$ 2.480</p></div>
+            <div class="kpi-card"><p class="kpi-label">Serviços</p><p class="kpi-val">14</p></div>
+            <div class="kpi-card"><p class="kpi-label">Avaliação</p><p class="kpi-val">4,9★</p></div>
+            <div class="kpi-card"><p class="kpi-label">Resposta</p><p class="kpi-val">98%</p></div>
+          </div>
+          <p class="section-title">Pedidos recebidos</p>
+          <div class="req-row">
+            <div>
+              <p style="font-size:12px;font-weight:500;color:#2C2C2A">Empresa Demo</p>
+              <p style="font-size:11px;color:#5F5E5A">Limpeza residencial</p>
+            </div>
+            <span class="badge-warn">Pendente</span>
+          </div>
+          <div class="req-row">
+            <div>
+              <p style="font-size:12px;font-weight:500;color:#2C2C2A">Empresa Demo</p>
+              <p style="font-size:11px;color:#5F5E5A">Limpeza pós-obra</p>
+            </div>
+            <span class="badge-ok">Confirmado</span>
+          </div>
+        </div>
+        <div class="bottom-tabs">
+          <div class="tab"><i class="ti ti-home"></i>Início</div>
+          <div class="tab"><i class="ti ti-search"></i>Buscar</div>
+          <div class="tab on"><i class="ti ti-layout-dashboard"></i>Painel</div>
+          <div class="tab"><i class="ti ti-user"></i>Perfil</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TELA 5: CADASTRO -->
+    <div class="screen-wrap">
+      <p class="screen-label">5 — cadastro de profissional</p>
+      <div class="phone">
+        <div class="status-bar"><span>9:41</span><span>100%</span></div>
+        <div class="nav-bar">
+          <div class="logo">
+            <div class="logo-dot"><i class="ti ti-phone" style="font-size:12px;color:#fff"></i></div>
+            Call Work
+          </div>
+        </div>
+        <div class="screen-body">
+          <div class="stepper">
+            <div class="step done"></div>
+            <div class="step cur"></div>
+            <div class="step"></div>
+          </div>
+          <p style="font-size:14px;font-weight:500;color:#2C2C2A;margin-bottom:4px">Dados profissionais</p>
+          <p style="font-size:11px;color:#5F5E5A;margin-bottom:12px">Esses dados aparecem no seu perfil público.</p>
+          <div class="field">
+            <label>Nome completo</label>
+            <input type="text" value="Ana Moura" readonly>
+          </div>
+          <div class="two-col">
+            <div class="field">
+              <label>Categoria</label>
+              <select><option>Limpeza</option></select>
+            </div>
+            <div class="field">
+              <label>Função</label>
+              <input type="text" value="Diarista" readonly>
+            </div>
+          </div>
+          <div class="field">
+            <label>Cidade de atuação</label>
+            <input type="text" value="Maringá, PR" readonly>
+          </div>
+          <div class="field">
+            <label>CNPJ / MEI (opcional)</label>
+            <input type="text" value="12.345.678/0001-90" readonly style="border-color:#1D9E75;background:#E1F5EE">
+          </div>
+          <div class="brand-btn" style="margin-top:8px">Concluir cadastro</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>
