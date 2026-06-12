@@ -1,0 +1,11 @@
+# back-end
+backend/target/
+*.class
+# front-end
+frontend/node_modules/
+frontend/dist/
+frontend/.angular/
+# diversos
+*.log
+.DS_Store
+.env

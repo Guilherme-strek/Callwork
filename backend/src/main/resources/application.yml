@@ -1,0 +1,22 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: callwork-api
+
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/callwork}
+    username: ${DB_USER:callwork}
+    password: ${DB_PASSWORD:callwork}
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+    show-sql: false
+
+callwork:
+  cors:
+    allowed-origins: ${CORS_ORIGINS:http://localhost:4200}

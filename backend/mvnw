@@ -1,0 +1,39 @@
+#!/bin/sh
+# Maven Wrapper script for Unix/macOS/Linux
+set -e
+
+MAVEN_WRAPPER_JAR=".mvn/wrapper/maven-wrapper.jar"
+MAVEN_WRAPPER_PROPERTIES=".mvn/wrapper/maven-wrapper.properties"
+
+# Read distributionUrl and wrapperUrl from properties
+DISTRIBUTION_URL=$(grep distributionUrl "$MAVEN_WRAPPER_PROPERTIES" | cut -d= -f2-)
+WRAPPER_URL=$(grep wrapperUrl "$MAVEN_WRAPPER_PROPERTIES" | cut -d= -f2-)
+
+# Determine user home
+USER_HOME="${HOME:-$USERPROFILE}"
+MAVEN_WRAPPER_DIR="$USER_HOME/.m2/wrapper"
+
+# Extract version from distributionUrl
+MAVEN_DIST=$(basename "$DISTRIBUTION_URL" .zip)
+MAVEN_HOME="$MAVEN_WRAPPER_DIR/dists/$MAVEN_DIST"
+
+if [ ! -d "$MAVEN_HOME" ]; then
+    mkdir -p "$MAVEN_HOME"
+    echo "Downloading Maven $MAVEN_DIST..."
+
+    # Try curl, then wget
+    if command -v curl >/dev/null 2>&1; then
+        curl -fsSL -o "$MAVEN_HOME/dist.zip" "$DISTRIBUTION_URL"
+    elif command -v wget >/dev/null 2>&1; then
+        wget -q -O "$MAVEN_HOME/dist.zip" "$DISTRIBUTION_URL"
+    else
+        echo "ERROR: Neither curl nor wget found. Please install Maven manually." >&2
+        exit 1
+    fi
+
+    unzip -q "$MAVEN_HOME/dist.zip" -d "$MAVEN_HOME"
+    rm "$MAVEN_HOME/dist.zip"
+fi
+
+MAVEN_BIN=$(find "$MAVEN_HOME" -name "mvn" -type f | head -1)
+exec "$MAVEN_BIN" "$@"

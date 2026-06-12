@@ -1,0 +1,1 @@
+Projeto usa 'mvn' ou './mvnw'. Caso nao tenha o wrapper, rode 'mvn -N wrapper:wrapper' dentro de backend/.
