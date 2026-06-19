@@ -1,28 +1,32 @@
 import 'package:flutter/material.dart';
-
+import '../app_theme.dart';
 import '../modls/prestador.dart';
 
 class MensagensScreen extends StatelessWidget {
   final Prestador prestador;
 
-  const MensagensScreen({
-    super.key,
-    required this.prestador,
-  });
+  const MensagensScreen({super.key, required this.prestador});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFFAF9F5),
+      backgroundColor: kBg,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: kBrand,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () => Navigator.pop(context),
+        ),
         title: Row(
           children: [
-            CircleAvatar(
-              backgroundColor: const Color(0xFF085041),
+            Container(
+              width: 32,
+              height: 32,
+              decoration: const BoxDecoration(color: kBrand500, shape: BoxShape.circle),
+              alignment: Alignment.center,
               child: Text(
                 prestador.nomePublico.substring(0, 1),
-                style: const TextStyle(color: Colors.white),
+                style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 14),
               ),
             ),
             const SizedBox(width: 10),
@@ -31,14 +35,11 @@ class MensagensScreen extends StatelessWidget {
               children: [
                 Text(
                   prestador.nomePublico,
-                  style: const TextStyle(fontSize: 16),
+                  style: const TextStyle(fontSize: 15, color: Colors.white),
                 ),
                 const Text(
                   '● online',
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Color(0xFF047857),
-                  ),
+                  style: TextStyle(fontSize: 11, color: kBrand300),
                 ),
               ],
             ),
@@ -49,21 +50,12 @@ class MensagensScreen extends StatelessWidget {
         children: [
           Expanded(
             child: ListView(
-              padding: const EdgeInsets.all(20),
+              padding: const EdgeInsets.all(14),
               children: [
-                _message(
-                  text: 'Oi Ana! Você atende limpeza comercial na sexta à tarde?',
-                  isMe: true,
-                ),
-                _message(
-                  text: 'Olá! Atendo sim 😊 Para a padaria, fica R\$ 150.',
-                  isMe: false,
-                ),
+                _message(text: 'Oi Ana! Você atende limpeza comercial na sexta à tarde?', isMe: true),
+                _message(text: 'Olá! Atendo sim 😊 Para a padaria, fica R\$ 150.', isMe: false),
                 _proposalCard(),
-                _message(
-                  text: 'Perfeito, vou aceitar agora. Obrigado!',
-                  isMe: true,
-                ),
+                _message(text: 'Perfeito, vou aceitar agora. Obrigado!', isMe: true),
               ],
             ),
           ),
@@ -73,24 +65,23 @@ class MensagensScreen extends StatelessWidget {
     );
   }
 
-  Widget _message({
-    required String text,
-    required bool isMe,
-  }) {
+  Widget _message({required String text, required bool isMe}) {
     return Align(
       alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
       child: Container(
-        margin: const EdgeInsets.only(bottom: 12),
-        padding: const EdgeInsets.all(14),
+        margin: const EdgeInsets.only(bottom: 10),
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
         constraints: const BoxConstraints(maxWidth: 280),
         decoration: BoxDecoration(
-          color: isMe ? const Color(0xFF085041) : Colors.white,
-          borderRadius: BorderRadius.circular(18),
+          color: isMe ? kBrand : Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          border: isMe ? null : Border.all(color: kBorder, width: 0.5),
         ),
         child: Text(
           text,
           style: TextStyle(
-            color: isMe ? Colors.white : const Color(0xFF111827),
+            fontSize: 13,
+            color: isMe ? Colors.white : kText,
           ),
         ),
       ),
@@ -99,51 +90,38 @@ class MensagensScreen extends StatelessWidget {
 
   Widget _proposalCard() {
     return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.all(18),
+      margin: const EdgeInsets.only(bottom: 10),
+      padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: const Color(0xFFE9F8F1),
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: const Color(0xFFD1F1E4)),
+        color: kBrand50,
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: kBrand300, width: 0.5),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text(
             'PROPOSTA DE SERVIÇO',
-            style: TextStyle(
-              color: Color(0xFF085041),
-              fontWeight: FontWeight.w900,
-              fontSize: 12,
-            ),
+            style: TextStyle(color: kBrand, fontWeight: FontWeight.w700, fontSize: 11, letterSpacing: 0.5),
           ),
-
-          const SizedBox(height: 10),
-
-          const Text(
-            'Limpeza comercial',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w900,
-            ),
-          ),
-
-          const SizedBox(height: 6),
-
-          const Text('R\$ 150'),
-          const Text('Sexta, 14h · ~3h de duração'),
-
-          const SizedBox(height: 14),
-
+          const SizedBox(height: 8),
+          const Text('Limpeza comercial', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: kText)),
+          const SizedBox(height: 4),
+          const Text('R\$ 150', style: TextStyle(fontSize: 13, color: kText)),
+          const Text('Sexta, 14h · ~3h de duração', style: TextStyle(fontSize: 12, color: kMuted)),
+          const SizedBox(height: 12),
           SizedBox(
             width: double.infinity,
             child: ElevatedButton(
               onPressed: () {},
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF085041),
+                backgroundColor: kBrand,
                 foregroundColor: Colors.white,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                elevation: 0,
               ),
-              child: const Text('Aceitar proposta'),
+              child: const Text('Aceitar proposta', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w500)),
             ),
           ),
         ],
@@ -153,31 +131,33 @@ class MensagensScreen extends StatelessWidget {
 
   Widget _inputArea() {
     return Container(
-      padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
-      color: Colors.white,
+      padding: const EdgeInsets.fromLTRB(14, 10, 14, 24),
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        border: Border(top: BorderSide(color: kBorder, width: 0.5)),
+      ),
       child: Row(
         children: [
           Expanded(
-            child: TextField(
-              decoration: InputDecoration(
-                hintText: 'Escreva uma mensagem...',
-                filled: true,
-                fillColor: const Color(0xFFF3F4F6),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(999),
-                  borderSide: BorderSide.none,
-                ),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+              decoration: BoxDecoration(
+                color: kBgMuted,
+                borderRadius: BorderRadius.circular(999),
+                border: Border.all(color: kBorder, width: 0.5),
+              ),
+              child: const Text(
+                'Escreva uma mensagem...',
+                style: TextStyle(fontSize: 13, color: kMuted),
               ),
             ),
           ),
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(Icons.attach_file),
-          ),
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(Icons.send),
-            color: const Color(0xFF085041),
+          const SizedBox(width: 8),
+          Container(
+            width: 38,
+            height: 38,
+            decoration: const BoxDecoration(color: kBrand, shape: BoxShape.circle),
+            child: const Icon(Icons.send, color: Colors.white, size: 18),
           ),
         ],
       ),

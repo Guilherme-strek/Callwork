@@ -1,108 +1,39 @@
 import 'package:flutter/material.dart';
-
+import '../app_theme.dart';
 import '../modls/prestador.dart';
 import 'mensagens_screen.dart';
 
 class PerfilPrestadorScreen extends StatelessWidget {
   final Prestador prestador;
 
-  const PerfilPrestadorScreen({
-    super.key,
-    required this.prestador,
-  });
+  const PerfilPrestadorScreen({super.key, required this.prestador});
 
   String getIniciais(String nome) {
     final partes = nome.trim().split(' ');
-
-    if (partes.length == 1) {
-      return partes.first.substring(0, 1).toUpperCase();
-    }
-
+    if (partes.length == 1) return partes.first[0].toUpperCase();
     return '${partes.first[0]}${partes.last[0]}'.toUpperCase();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFFAF9F5),
-      appBar: AppBar(
-        backgroundColor: const Color(0xFFFAF9F5),
-        elevation: 0,
-        title: const Text('Perfil do prestador'),
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          children: [
-            _buildHeader(),
-            const SizedBox(height: 18),
-            _buildStats(),
-            const SizedBox(height: 18),
-            _buildAvaliacoes(),
-            const SizedBox(height: 18),
-            _buildServicos(),
-          ],
-        ),
-      ),
-      bottomNavigationBar: _buildActions(context),
-    );
-  }
-
-  Widget _buildHeader() {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(22),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(26),
-      ),
-      child: Column(
+      backgroundColor: kBg,
+      body: Column(
         children: [
-          CircleAvatar(
-            radius: 42,
-            backgroundColor: const Color(0xFF085041),
-            child: Text(
-              getIniciais(prestador.nomePublico),
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 24,
-                fontWeight: FontWeight.w900,
+          _buildHeader(context),
+          Expanded(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(14),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildServicos(),
+                  const SizedBox(height: 14),
+                  _buildBotaoMensagem(context),
+                  const SizedBox(height: 14),
+                  _buildAvaliacoes(),
+                ],
               ),
-            ),
-          ),
-
-          const SizedBox(height: 14),
-
-          Text(
-            prestador.nomePublico,
-            style: const TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.w900,
-            ),
-          ),
-
-          const SizedBox(height: 4),
-
-          Text(
-            '${prestador.categoria} · ${prestador.cidade}, ${prestador.estado}',
-            textAlign: TextAlign.center,
-            style: const TextStyle(
-              color: Color(0xFF6B7280),
-              fontSize: 15,
-            ),
-          ),
-
-          const SizedBox(height: 10),
-
-          Text(
-            prestador.meiVerificado
-                ? '✔ MEI verificado'
-                : 'Profissional autônomo',
-            style: TextStyle(
-              color: prestador.meiVerificado
-                  ? const Color(0xFF047857)
-                  : const Color(0xFF6B7280),
-              fontWeight: FontWeight.w800,
             ),
           ),
         ],
@@ -110,167 +41,202 @@ class PerfilPrestadorScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildStats() {
-    return Row(
+  Widget _buildHeader(BuildContext context) {
+    return Container(
+      color: kBrand,
+      padding: const EdgeInsets.fromLTRB(16, 48, 16, 16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          GestureDetector(
+            onTap: () => Navigator.pop(context),
+            child: const Text(
+              '← Voltar à busca',
+              style: TextStyle(fontSize: 12, color: kBrand300),
+            ),
+          ),
+          const SizedBox(height: 10),
+          Row(
+            children: [
+              Container(
+                width: 52,
+                height: 52,
+                decoration: const BoxDecoration(color: kBrand500, shape: BoxShape.circle),
+                alignment: Alignment.center,
+                child: Text(
+                  getIniciais(prestador.nomePublico),
+                  style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w500, color: Colors.white),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Flexible(
+                          child: Text(
+                            prestador.nomePublico,
+                            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: Colors.white),
+                          ),
+                        ),
+                        if (prestador.meiVerificado) ...[
+                          const SizedBox(width: 6),
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                            decoration: BoxDecoration(
+                              color: kBrand300,
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                            child: const Text(
+                              '✓ MEI',
+                              style: TextStyle(fontSize: 9, color: kBrand, fontWeight: FontWeight.w600),
+                            ),
+                          ),
+                        ],
+                      ],
+                    ),
+                    Text(
+                      '${prestador.categoria} · ${prestador.cidade}, ${prestador.estado}',
+                      style: const TextStyle(fontSize: 12, color: kBrand300),
+                    ),
+                    Text(
+                      '★ ${prestador.avaliacaoMedia} · ${prestador.totalAvaliacoes} avaliações',
+                      style: const TextStyle(fontSize: 12, color: kBrand300),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildServicos() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _statCard('Avaliação', prestador.avaliacaoMedia.toString(), Icons.star),
-        const SizedBox(width: 10),
-        _statCard('Serviços', prestador.totalAvaliacoes.toString(), Icons.work),
-        const SizedBox(width: 10),
-        _statCard('Resposta', '~1h', Icons.schedule),
+        const Text(
+          'Serviços e preços',
+          style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: kText),
+        ),
+        const SizedBox(height: 8),
+        Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(color: kBorder, width: 0.5),
+          ),
+          child: Column(
+            children: [
+              _svcRow('Limpeza residencial', prestador.precoBase),
+              _svcRow('Limpeza pós-obra', prestador.precoBase * 1.5),
+              _svcRow('Limpeza comercial', prestador.precoBase * 1.2),
+            ],
+          ),
+        ),
+        const SizedBox(height: 12),
+        SizedBox(
+          width: double.infinity,
+          child: ElevatedButton(
+            onPressed: () {},
+            style: ElevatedButton.styleFrom(
+              backgroundColor: kBrand,
+              foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+              padding: const EdgeInsets.symmetric(vertical: 12),
+              elevation: 0,
+            ),
+            child: const Text('📅 Solicitar serviço', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
+          ),
+        ),
       ],
     );
   }
 
-  Widget _statCard(String label, String value, IconData icon) {
-    return Expanded(
-      child: Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(22),
+  Widget _svcRow(String nome, double valor) {
+    final isLast = nome == 'Limpeza comercial';
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      decoration: BoxDecoration(
+        border: isLast ? null : const Border(bottom: BorderSide(color: kBorder, width: 0.5)),
+      ),
+      child: Row(
+        children: [
+          Expanded(child: Text(nome, style: const TextStyle(fontSize: 13, color: kText))),
+          Text(
+            'R\$ ${valor.toStringAsFixed(0)},00',
+            style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500, color: kText),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildBotaoMensagem(BuildContext context) {
+    return SizedBox(
+      width: double.infinity,
+      child: OutlinedButton.icon(
+        onPressed: () => Navigator.push(
+          context,
+          MaterialPageRoute(builder: (_) => MensagensScreen(prestador: prestador)),
         ),
-        child: Column(
-          children: [
-            Icon(icon, color: const Color(0xFF085041)),
-            const SizedBox(height: 8),
-            Text(
-              value,
-              style: const TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.w900,
-              ),
-            ),
-            Text(
-              label,
-              style: const TextStyle(
-                color: Color(0xFF6B7280),
-                fontSize: 12,
-              ),
-            ),
-          ],
+        icon: const Icon(Icons.chat_bubble_outline, size: 16),
+        label: const Text('Enviar mensagem'),
+        style: OutlinedButton.styleFrom(
+          foregroundColor: kBrand,
+          side: const BorderSide(color: Color(0xFF0F6E56)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          padding: const EdgeInsets.symmetric(vertical: 12),
         ),
       ),
     );
   }
 
   Widget _buildAvaliacoes() {
-    return _section(
-      title: 'Avaliações recentes',
-      children: const [
-        Text('★★★★★ Pontual e caprichosa. — Padaria do Bairro'),
-        SizedBox(height: 10),
-        Text('★★★★★ Ótimo trabalho no escritório. — TechLocal MEI'),
-      ],
-    );
-  }
-
-  Widget _buildServicos() {
-    return _section(
-      title: 'Serviços oferecidos',
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _serviceRow('Limpeza residencial', 120),
-        _serviceRow('Limpeza pós-obra', 180),
-        _serviceRow('Limpeza comercial', 150),
+        const Text(
+          'Avaliações',
+          style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: kText),
+        ),
+        const SizedBox(height: 8),
+        Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(color: kBorder, width: 0.5),
+          ),
+          child: Column(
+            children: [
+              _reviewRow('Maria Lima', 'Excelente serviço, pontual e cuidadosa!'),
+              _reviewRow('Pedro Costa', 'Muito profissional, recomendo.', isLast: true),
+            ],
+          ),
+        ),
       ],
     );
   }
 
-  Widget _serviceRow(String nome, double valor) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
-      child: Row(
-        children: [
-          Expanded(
-            child: Text(
-              nome,
-              style: const TextStyle(fontWeight: FontWeight.w700),
-            ),
-          ),
-          Text(
-            'R\$ ${valor.toStringAsFixed(0)}',
-            style: const TextStyle(
-              fontWeight: FontWeight.w900,
-              color: Color(0xFF111827),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _section({
-    required String title,
-    required List<Widget> children,
-  }) {
+  Widget _reviewRow(String nome, String texto, {bool isLast = false}) {
     return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(24),
+        border: isLast ? null : const Border(bottom: BorderSide(color: kBorder, width: 0.5)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            title,
-            style: const TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w900,
-            ),
+            '★★★★★  $nome',
+            style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500, color: kText),
           ),
-          const SizedBox(height: 14),
-          ...children,
-        ],
-      ),
-    );
-  }
-
-  Widget _buildActions(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.fromLTRB(20, 14, 20, 24),
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        border: Border(
-          top: BorderSide(color: Color(0xFFE5E7EB)),
-        ),
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            child: ElevatedButton.icon(
-              onPressed: () {},
-              icon: const Icon(Icons.calendar_month),
-              label: const Text('Solicitar'),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF085041),
-                foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(vertical: 14),
-              ),
-            ),
-          ),
-
-          const SizedBox(width: 12),
-
-          Expanded(
-            child: OutlinedButton.icon(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => MensagensScreen(prestador: prestador),
-                  ),
-                );
-              },
-              icon: const Icon(Icons.chat_bubble_outline),
-              label: const Text('Mensagem'),
-              style: OutlinedButton.styleFrom(
-                foregroundColor: const Color(0xFF085041),
-                padding: const EdgeInsets.symmetric(vertical: 14),
-              ),
-            ),
-          ),
+          const SizedBox(height: 3),
+          Text(texto, style: const TextStyle(fontSize: 12, color: kMuted)),
         ],
       ),
     );

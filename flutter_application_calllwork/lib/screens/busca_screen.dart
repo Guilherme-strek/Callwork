@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_calllwork/modls/prestador.dart';
-
+import '../app_theme.dart';
+import '../modls/prestador.dart';
 import '../service/prestador-service.dart';
 import '../widgests/prestador_card.dart';
 
@@ -13,23 +13,15 @@ class BuscaScreen extends StatefulWidget {
 
 class _BuscaScreenState extends State<BuscaScreen> {
   final PrestadorService prestadorService = PrestadorService();
-
   final TextEditingController buscaController = TextEditingController();
-  final TextEditingController cidadeController = TextEditingController(
-    text: 'Maringá',
-  );
+  final TextEditingController cidadeController = TextEditingController(text: 'Maringá');
 
   List<Prestador> prestadores = [];
   bool carregando = false;
   String erro = '';
   String categoriaSelecionada = 'Todos';
 
-  final List<String> categorias = [
-    'Todos',
-    'Reformas',
-    'Limpeza',
-    'Tech',
-  ];
+  final List<String> categorias = ['Todos', 'Limpeza', 'Reformas', 'Tecnologia', 'Beleza'];
 
   @override
   void initState() {
@@ -38,234 +30,175 @@ class _BuscaScreenState extends State<BuscaScreen> {
   }
 
   Future<void> buscarPrestadores() async {
+    if (!mounted) return;
     setState(() {
       carregando = true;
       erro = '';
     });
-
     try {
       final resultado = await prestadorService.buscarPrestadores(
         q: buscaController.text,
         cidade: cidadeController.text,
       );
-
-      setState(() {
-        prestadores = resultado;
-      });
+      if (mounted) setState(() => prestadores = resultado);
     } catch (e) {
-      setState(() {
-        erro = 'Não foi possível carregar os prestadores.';
-      });
+      if (mounted) setState(() => erro = 'Não foi possível carregar os prestadores.');
     } finally {
-      setState(() {
-        carregando = false;
-      });
+      if (mounted) setState(() => carregando = false);
     }
   }
 
   List<Prestador> get prestadoresFiltrados {
-    if (categoriaSelecionada == 'Todos') {
-      return prestadores;
-    }
-
-    return prestadores.where((prestador) {
-      return prestador.categoria.toLowerCase().contains(
-            categoriaSelecionada.toLowerCase(),
-          );
-    }).toList();
+    if (categoriaSelecionada == 'Todos') return prestadores;
+    return prestadores
+        .where((p) => p.categoria.toLowerCase().contains(categoriaSelecionada.toLowerCase()))
+        .toList();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFFAF9F5),
-      body: SafeArea(
-        child: Column(
-          children: [
-            _buildHeader(),
-            _buildSearchArea(),
-            _buildCategorias(),
+      backgroundColor: kBg,
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildNavBar(),
+          _buildSearchBar(),
+          _buildCategorias(),
+          if (!carregando && prestadoresFiltrados.isNotEmpty)
+            Padding(
+              padding: const EdgeInsets.fromLTRB(14, 4, 14, 8),
+              child: Text(
+                '${prestadoresFiltrados.length} profissionais em ${cidadeController.text}',
+                style: const TextStyle(fontSize: 12, color: kMuted),
+              ),
+            ),
+          Expanded(
+            child: RefreshIndicator(
+              onRefresh: buscarPrestadores,
+              child: _buildLista(),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 
+  Widget _buildNavBar() {
+    return Container(
+      color: kBrand,
+      padding: const EdgeInsets.fromLTRB(16, 48, 16, 14),
+      child: Row(
+        children: [
+          Container(
+            width: 26,
+            height: 26,
+            decoration: BoxDecoration(
+              color: kBrand500,
+              borderRadius: BorderRadius.circular(6),
+            ),
+            child: const Icon(Icons.phone, size: 14, color: Colors.white),
+          ),
+          const SizedBox(width: 8),
+          const Text(
+            'Call Work',
+            style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w500),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSearchBar() {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(14, 12, 14, 8),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+        decoration: BoxDecoration(
+          color: kBgMuted,
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: const Color(0xFFB4B2A9), width: 0.5),
+        ),
+        child: Row(
+          children: [
+            const Icon(Icons.search, size: 18, color: kMuted),
+            const SizedBox(width: 8),
             Expanded(
-              child: RefreshIndicator(
-                onRefresh: buscarPrestadores,
-                child: _buildListaPrestadores(),
+              child: TextField(
+                controller: buscaController,
+                onSubmitted: (_) => buscarPrestadores(),
+                decoration: const InputDecoration(
+                  hintText: 'Diarista, eletricista...',
+                  hintStyle: TextStyle(fontSize: 13, color: kMuted),
+                  isDense: true,
+                  border: InputBorder.none,
+                  contentPadding: EdgeInsets.zero,
+                ),
+                style: const TextStyle(fontSize: 13, color: kText),
               ),
             ),
           ],
         ),
-      ),
-
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: 0,
-        selectedItemColor: const Color(0xFF085041),
-        unselectedItemColor: const Color(0xFF6B7280),
-        type: BottomNavigationBarType.fixed,
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.search),
-            label: 'Buscar',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.receipt_long),
-            label: 'Pedidos',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.chat_bubble_outline),
-            label: 'Conversas',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person_outline),
-            label: 'Perfil',
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildHeader() {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(20, 16, 20, 10),
-      child: Row(
-        children: [
-          const Text(
-            '📞 Call Work',
-            style: TextStyle(
-              fontSize: 22,
-              fontWeight: FontWeight.w900,
-              color: Color(0xFF085041),
-            ),
-          ),
-
-          const Spacer(),
-
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(Icons.notifications_none),
-          ),
-
-          const CircleAvatar(
-            radius: 18,
-            backgroundColor: Color(0xFF1D9E75),
-            child: Text(
-              'JS',
-              style: TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.w800,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildSearchArea() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      child: Column(
-        children: [
-          TextField(
-            controller: buscaController,
-            onSubmitted: (_) => buscarPrestadores(),
-            decoration: InputDecoration(
-              hintText: 'Eletricista, diarista, pedreiro...',
-              prefixIcon: const Icon(Icons.search),
-              filled: true,
-              fillColor: Colors.white,
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(18),
-                borderSide: BorderSide.none,
-              ),
-            ),
-          ),
-
-          const SizedBox(height: 10),
-
-          TextField(
-            controller: cidadeController,
-            onSubmitted: (_) => buscarPrestadores(),
-            decoration: InputDecoration(
-              hintText: 'Cidade',
-              prefixIcon: const Icon(Icons.location_on_outlined),
-              filled: true,
-              fillColor: Colors.white,
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(18),
-                borderSide: BorderSide.none,
-              ),
-            ),
-          ),
-        ],
       ),
     );
   }
 
   Widget _buildCategorias() {
     return SizedBox(
-      height: 58,
+      height: 38,
       child: ListView.separated(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+        padding: const EdgeInsets.symmetric(horizontal: 14),
         scrollDirection: Axis.horizontal,
         itemCount: categorias.length,
-        separatorBuilder: (_, __) => const SizedBox(width: 10),
+        separatorBuilder: (_, __) => const SizedBox(width: 6),
         itemBuilder: (context, index) {
-          final categoria = categorias[index];
-          final selecionada = categoria == categoriaSelecionada;
-
-          return ChoiceChip(
-            label: Text(categoria),
-            selected: selecionada,
-            selectedColor: const Color(0xFF085041),
-            labelStyle: TextStyle(
-              color: selecionada ? Colors.white : const Color(0xFF374151),
-              fontWeight: FontWeight.w700,
+          final cat = categorias[index];
+          final on = cat == categoriaSelecionada;
+          return GestureDetector(
+            onTap: () => setState(() => categoriaSelecionada = cat),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              decoration: BoxDecoration(
+                color: on ? kBrand50 : Colors.white,
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(
+                  color: on ? kBrand300 : kBorder,
+                  width: 0.5,
+                ),
+              ),
+              child: Text(
+                cat,
+                style: TextStyle(
+                  fontSize: 12,
+                  color: on ? kBrand : kMuted,
+                  fontWeight: on ? FontWeight.w500 : FontWeight.normal,
+                ),
+              ),
             ),
-            backgroundColor: Colors.white,
-            onSelected: (_) {
-              setState(() {
-                categoriaSelecionada = categoria;
-              });
-            },
           );
         },
       ),
     );
   }
 
-  Widget _buildListaPrestadores() {
+  Widget _buildLista() {
     if (carregando) {
-      return const Center(
-        child: CircularProgressIndicator(),
-      );
+      return const Center(child: CircularProgressIndicator(color: kBrand));
     }
-
     if (erro.isNotEmpty) {
       return Center(
-        child: Text(
-          erro,
-          style: const TextStyle(
-            color: Colors.red,
-            fontWeight: FontWeight.w700,
-          ),
-        ),
+        child: Text(erro, style: const TextStyle(fontSize: 13, color: kMuted)),
       );
     }
-
     if (prestadoresFiltrados.isEmpty) {
       return const Center(
-        child: Text('Nenhum prestador encontrado.'),
+        child: Text('Nenhum prestador encontrado.', style: TextStyle(fontSize: 13, color: kMuted)),
       );
     }
-
     return ListView.builder(
-      padding: const EdgeInsets.fromLTRB(20, 6, 20, 20),
+      padding: const EdgeInsets.fromLTRB(14, 8, 14, 20),
       itemCount: prestadoresFiltrados.length,
-      itemBuilder: (context, index) {
-        return PrestadorCard(
-          prestador: prestadoresFiltrados[index],
-        );
-      },
+      itemBuilder: (context, index) => PrestadorCard(prestador: prestadoresFiltrados[index]),
     );
   }
 }
